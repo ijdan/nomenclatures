@@ -4,8 +4,12 @@ import com.ijdan.training.nomenclatures.util.HashMaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 import java.util.*;
 
+/**
+ * Class permettant la préparation de la requête SQL pour interroger la base
+ * */
 public class Prepare {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     List<String> fields;
@@ -15,6 +19,7 @@ public class Prepare {
     String item = "";
 
     StringBuilder query = new StringBuilder();
+
 
     public Prepare(List<String> _fields, String _sort, String _sens, String _offset, String _item) {
         this.setFields(_fields);
