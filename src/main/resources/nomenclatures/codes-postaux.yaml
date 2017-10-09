@@ -1,0 +1,30 @@
+nomenclature:
+  resource: codes-postaux
+  pk: code_insee
+  table: codes_postaux
+  output:
+    insee: code_insee
+    codePostal: id
+    ville: label
+    language: lang
+
+  paging:
+    enable: true
+    packet: 50
+  sort:
+    enable: true
+    fields:
+      - code_insee
+      - label
+  filters:
+    enable: true
+    fields:
+      - lang
+  clause:
+    - name: status
+      values:
+        - 0
+    - name: lang
+      values:
+        - FR
+        - EN

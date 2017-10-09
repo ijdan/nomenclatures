@@ -1,0 +1,16 @@
+# ===============================
+# = DATA SOURCE
+# ===============================
+cassandra:
+  keyspace: nomenclatures
+  IP: 127.0.0.1
+
+
+logging:
+  level:
+    org.springframework.web: ERROR
+    com.mkyong: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file: /Users/mkyong/application.log

@@ -1,0 +1,9 @@
+nomenclature:
+  resource: pays
+  id: code
+  table: pays
+  output:
+    code: code
+    name: libelle
+    language: lang
+    iso3: b025_cd_pays_iso3a
