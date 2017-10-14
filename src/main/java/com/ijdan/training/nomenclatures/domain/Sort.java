@@ -1,19 +1,11 @@
 package com.ijdan.training.nomenclatures.domain;
 
 public class Sort {
-
-    private String enable;
     private String[] fields;
+    private String[] sens;
 
     public Sort() {
-    }
 
-    public String getEnable() {
-        return enable;
-    }
-
-    public void setEnable(String enable) {
-        this.enable = enable;
     }
 
     public String[] getFields() {
@@ -22,6 +14,20 @@ public class Sort {
 
     public void setFields(String[] fields) {
         this.fields = fields;
+    }
+
+    public String[] getSens() {
+        return sens;
+    }
+
+    public void setSens(String[] sens) {
+        this.sens = sens;
+    }
+
+    @Override
+    public String toString() {
+        return  "fields : <"+ this.getFields().toString() +">" +
+                "sens : <"+ this.getSens().toString() +">";
     }
 }
 

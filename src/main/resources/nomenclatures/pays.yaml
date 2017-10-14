@@ -1,54 +1,52 @@
-structure:
-  #le nom de la ressource telle que exposée dans les URI
-  #c'est aussi le nom du fichier
-  resourceName : pays
+#le nom de la ressource telle que exposée dans les URI
+#c'est aussi le nom du fichier
+resourceName: pays
 
-  #Le nom technique de la table
-  dbTable: t_pays
+#Le nom technique de la table
+dbTable: t_pays
 
-  #les attributs retournés dans les appels REST.
-  #à gauche le nom tel que présent dans le retour
-  #à droite le nom technique dans la table
-  output:
-    #l'attribut id est un nom standard pour définir l'identifiant d'une ressource.
-    id : code
-    #Les autres sorties se déclarent sous la forme attributeName : dbColumunName
-    countryShortName: nom_pays_court
-    countryCodeLen2: code_pays_2
-    countryCodeLen3: code_pays_3
-    countryNumCode: pays_numero
-    countryLanguage: pays_langue
-    language: lang
-    countryContinentId: pays_continent_id
+#les attributs retournés dans les appels REST.
+#à gauche le nom tel que présent dans le retour
+#à droite le nom technique dans la table
+output:
+  #l'attribut id est un nom standard pour définir l'identifiant d'une ressource.
+  id: code
+  #Les autres sorties se déclarent sous la forme attributeName : dbColumunName
+  #il est possible de choisir les attributs souhaités en sortie lors de la requête.
+  countryShortName: nom_pays_court
+  countryCodeLen2: code_pays_2
+  countryCodeLen3: code_pays_3
+  countryNumCode: pays_numero
+  countryLanguage: pays_langue
+  language: lang
+  countryContinentId: pays_continent_id
 
-  #pagination. Optionnel. Par défaut, pas de pagination
-  #nombre d'éléments par page. N'opère que si enable à true
-  paging: 50
+#pagination. Optionnel. Par défaut, pas de pagination
+#nombre d'éléments par page. N'opère que si enable à true
+paging: 50
 
-  #Tri. Optionnel. Par défaut pas de tri possible
-  sort:
-    #Nom de la ressource sur laquelle le tri s'applique
-    fields:
-      - countryShortName
-      - countryCodeLen2
-    #Sens permis pour le tri
-    sens:
-      - ASC
-      - DESC
+#Tri. Optionnel. Par défaut pas de tri possible
+sort:
+  #Nom de la ressource sur laquelle le tri s'applique
+  fields:
+    - countryShortName
+    - countryCodeLen2
+  #Sens permis pour le tri
+  sens:
+    - ASC
+    - DESC
 
-  #Filtre. Optionnel. Par défaut à false.
-  filters:
-    #Nom des ressources tolérant le filtre (avec égal à)
-    - countryContinentId
-    - language
+#Filtre. Optionnel. Par défaut à inactif "0".
+#Il s'agit de permettre ou pas l'appelant de sélectioner les données qu'il souhaite en sortie parmi les ttributs déclarés dans output
+enabledFieldsSelection: 1
 
-  #Optionnel. Par défaut aucune clause.
-  clause:
-    #Etat de l'élément. Le nom technique de la table et la valeur imposée lors de la récupération
-    - name: status
-      values:
-        - 0
-    - name: language
-      values:
-        - FR
-        - EN
+#Optionnel. Par défaut aucune clause.
+clause:
+  #Etat de l'élément. Le nom technique de la table et la valeur imposée lors de la récupération
+  - name: status
+    values:
+      - 0
+  - name: language
+    values:
+      - FR
+      - EN
