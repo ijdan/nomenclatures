@@ -23,17 +23,21 @@ output:
 
 #pagination. Optionnel. Par défaut, pas de pagination
 #nombre d'éléments par page. N'opère que si enable à true
-paging: 50
+paging:
+  enabled: 1
+  packet: 50
 
 #Tri. Optionnel. Par défaut pas de tri possible
 sort:
+  enabled: 1
   #Nom de la ressource sur laquelle le tri s'applique
   fields:
+    - id #la première est la valeur par défaut
     - countryShortName
     - countryCodeLen2
   #Sens permis pour le tri
   sens:
-    - ASC
+    - ASC #la première est la valeur par défaut
     - DESC
 
 #Filtre. Optionnel. Par défaut à inactif "0".

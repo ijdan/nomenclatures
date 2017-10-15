@@ -1,13 +1,17 @@
 package com.ijdan.training.nomenclatures.domain;
 
+import com.sun.tools.javac.util.ArrayUtils;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Nomenclature {
     private String resourceName;
     private String dbTable;
-    private HashMap<String, String> output = new HashMap<>();
-    private String paging;
+    private Map<String, String> output = new HashMap<>();
+    private Paging paging;
     private Sort sort;
     private String enabledFieldsSelection;
     private List<Clause> clause;
@@ -18,7 +22,6 @@ public class Nomenclature {
     public String getResourceName() {
         return resourceName;
     }
-
     public void setResourceName(String resourceName) {
         this.resourceName = resourceName;
     }
@@ -26,30 +29,27 @@ public class Nomenclature {
     public String getDbTable() {
         return dbTable;
     }
-
     public void setDbTable(String dbTable) {
         this.dbTable = dbTable;
     }
 
-    public HashMap<String, String> getOutput() {
+    public Map<String, String> getOutput() {
         return output;
     }
-
-    public void setOutput(HashMap<String, String> output) {
+    public void setOutput(Map<String, String> output) {
         this.output = output;
     }
 
-    public String getPaging() {
+    public Paging getPaging() {
         return paging;
     }
-
-    public void setPaging(String paging) {
+    public void setPaging(Paging paging) {
         this.paging = paging;
     }
+
     public Sort getSort() {
         return sort;
     }
-
     public void setSort(Sort sort) {
         this.sort = sort;
     }
@@ -57,7 +57,6 @@ public class Nomenclature {
     public String getEnabledFieldsSelection() {
         return enabledFieldsSelection;
     }
-
     public void setEnabledFieldsSelection(String enabledFieldsSelection) {
         this.enabledFieldsSelection = enabledFieldsSelection;
     }
@@ -65,21 +64,81 @@ public class Nomenclature {
     public List<Clause> getClause() {
         return clause;
     }
-
     public void setClause(List<Clause> clause) {
         this.clause = clause;
     }
 
-    @Override
-    public String toString() {
-        return  "resourceName : <"+ this.getResourceName() +">" +
-                "dbTable : <"+ this.getDbTable() +">" +
-                "output : <"+ this.getOutput().toString() +">" +
-                "sort : <"+ this.getSort().toString() +">" +
-                "paging : <"+ this.getPaging() +">" +
-                "resourceName : <"+ resourceName +">" +
-                "enabledFieldsSelection : <"+ this.getEnabledFieldsSelection() +">";
+
+    /**
+     * Fixe les attributs de la ressource à restituer
+     * */
+    public List<String> getOutputKeys (List<String> selectedFields){
+        List<String> fields = new ArrayList<String>();
+
+        List<String> outputKeys = new ArrayList<String>();
+
+        for (Map.Entry<String, String> key : this.getOutput().entrySet()) {
+            fields.add( key.getKey() );
+
+            if (selectedFields != null && selectedFields.contains(key.getKey())) {
+                outputKeys.add( key.getKey() );
+            }
+        }
+        if (outputKeys.size() > 0){
+            return outputKeys;
+        }else {
+            return fields;
+        }
     }
 
+    /**
+     * Fixe l'attibut sur lequel appliquer le tri
+     * */
+    public String getSortField (String sortFields){
+        if ( sortFields !=  null && !sortFields.isEmpty() && this.getSort().getFields().contains(sortFields) ){
+           return sortFields;
+        }else {
+            return this.getSort().getFields().get(0);
+        }
+    }
 
+    /**
+     * Fixe le sens du tri
+     * */
+    public String getSortSens (String sortSens){
+        if ( sortSens !=  null && !sortSens.isEmpty() && this.getSort().getSens().contains(sortSens) ){
+            return sortSens;
+        }else {
+            return this.getSort().getSens().get(0);
+        }
+
+    }
+
+    /**
+     * Fixe le nombre d'éléments par paquet
+     * */
+    public String getPagingPacket (String paginPacket){
+        String packet;
+        try{
+            packet = Integer.valueOf(paginPacket).toString();
+        }catch (NumberFormatException e){
+            packet = this.getPaging().getPacket();
+        }
+
+        if(packet.equals("0")){
+            packet = this.getPaging().getPacket();
+        }
+        return packet;
+    }
+
+    /**
+     * Fixe le positionnement du paquet à demander
+     * */
+    public String getOffset(String offset) {
+        try{
+            return Integer.valueOf(offset).toString();
+        }catch (NumberFormatException e){
+            return "0";
+        }
+    }
 }
