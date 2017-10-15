@@ -3,6 +3,7 @@ package com.ijdan.training.nomenclatures.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.ijdan.training.nomenclatures.domain.Nomenclature;
+import com.ijdan.training.nomenclatures.domain.PrepareRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +61,10 @@ public class NomenclaturesController {
         //Validation de l'offset : le positionnement du paquet à retourner
         offset = nomenclature.getOffset (offset);
 
-        return offset;
+        PrepareRequest prepareRequest = new PrepareRequest(nomenclature, selectedFields, sortField, sortSens, paginPacket, offset);
+
+
+        return prepareRequest.getPreparedRequest();
     }
 
 }
