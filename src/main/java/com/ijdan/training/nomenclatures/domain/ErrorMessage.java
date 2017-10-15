@@ -1,6 +1,5 @@
 package com.ijdan.training.nomenclatures.domain;
 
-import javax.swing.plaf.PanelUI;
 import java.util.HashMap;
 
 public class ErrorMessage {
@@ -15,7 +14,7 @@ public class ErrorMessage {
     }
 
     public ErrorMessage(String error, String message) {
-        setError(error);;
+        setError(error);
         setMessage(message);
         setDescription(description);
     }

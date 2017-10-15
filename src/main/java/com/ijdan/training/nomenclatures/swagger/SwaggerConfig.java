@@ -26,7 +26,7 @@ public class SwaggerConfig {
     }
 
     private ApiInfo metaData() {
-        ApiInfo apiInfo = new ApiInfo(
+        return new ApiInfo(
                 "Spring Boot REST API",
                 "Spring Boot REST API for Online Store",
                 "0.1",
@@ -34,6 +34,5 @@ public class SwaggerConfig {
                 new Contact("Ijdan", "https://training.ijdan.com/about/", "ijdan@google.com"),
                 "Apache License Version 2.0",
                 "https://www.apache.org/licenses/LICENSE-2.0");
-        return apiInfo;
     }
 }

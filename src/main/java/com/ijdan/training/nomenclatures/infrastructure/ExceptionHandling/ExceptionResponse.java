@@ -16,7 +16,7 @@ public class ExceptionResponse {
     private String message;
 
     public ExceptionResponse() {
-        this.uuid = UUID.randomUUID();;
+        this.uuid = UUID.randomUUID();
         this.timestamp = Timestamp.from(Instant.now());
     }
 
