@@ -13,10 +13,13 @@ public class PrepareRequest {
                           String paginPacket,
                           String offset) {
 
-
         List<String> request = new ArrayList<String>();
 
-        request.add("SELECT " + String.join(", ", selectedFields));
+        List<String> selectedColumn = new ArrayList<String>();
+        for(String sf : selectedFields){
+            selectedColumn.add(nomenclature.getOutput().get(sf) + " AS " + sf);
+        }
+        request.add("SELECT " + String.join(", ", selectedColumn));
 
         request.add("FROM "+ nomenclature.getDbTable());
 
