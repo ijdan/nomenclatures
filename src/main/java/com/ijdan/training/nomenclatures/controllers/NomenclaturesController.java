@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.ijdan.training.nomenclatures.domain.Nomenclature;
 import com.ijdan.training.nomenclatures.domain.PrepareRequest;
 import com.ijdan.training.nomenclatures.infrastructure.ExceptionHandling.InternalErrorException;
+import com.ijdan.training.nomenclatures.infrastructure.ExceptionHandling.ResourceNotFoundException;
 import com.ijdan.training.nomenclatures.repository.H2Connection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/T1.0/nomenclatures")
 public class NomenclaturesController {
-    private Nomenclature nomenclature;
+    private static Nomenclature nomenclature;
     private static String LAST_NOMENCLATURE = "";
 
 
@@ -36,19 +37,22 @@ public class NomenclaturesController {
             @RequestParam(value="offset", required = false) String offset
     ) {
 
-        String pathYMLFile = "nomenclatures/" + nomenclatureName + ".yaml";
-        LOGGER.warn("nomenclatures/" + nomenclatureName + ".yaml");
+        if (nomenclature == null || !nomenclature.getResourceName().equals(nomenclatureName)) {
+            String pathYMLFile = "nomenclatures/" + nomenclatureName + ".yaml";
+            LOGGER.warn("Chargement du fichier [" + pathYMLFile + "]");
 
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        File file;
-        try {
-            file = new File( getClass().getClassLoader().getResource(pathYMLFile).getFile() );
-            /**
-             * Mapper le fichier YAML avec le POJO nomenclature
-             * */
-            nomenclature = mapper.readValue(file, Nomenclature.class);
-        }catch (Exception e) {
-            throw new InternalErrorException("Err.00001", "!! Mapping Error with ["+ nomenclatureName +"] resource !!");
+            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            try {
+                File file = new File(getClass().getClassLoader().getResource(pathYMLFile).getFile());
+                /**
+                 * Mapper le fichier YAML avec le POJO nomenclature
+                 * */
+                nomenclature = mapper.readValue(file, Nomenclature.class);
+            } catch (Exception e) {
+                throw new ResourceNotFoundException("Err.00001", "!! Mapping Error with [" + nomenclatureName + "] resource !!");
+            }
+        }else{
+            LOGGER.warn("Conifiguration de la nomenclature [" + nomenclature.getResourceName() + "] déjà chargée");
         }
 
           //  if (!LAST_NOMENCLATURE.equals(nomenclatureName)) {
