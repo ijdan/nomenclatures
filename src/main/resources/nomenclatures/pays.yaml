@@ -50,7 +50,19 @@ clause:
   - name: status
     values:
       - 0
-  - name: language
+  - name: lang
     values:
       - FR
       - EN
+
+cache:
+  #actif à 1. Lorsqu'il est non actif, le service requête la base de données maître lors de chaque demande. A inactif, le service utilise sa base mémoire H2.
+  enabled: 1
+  #La durée (seconde) de validité de la table H2. Au dela de cette durée, le système requête la base principale.
+  expiration: 60
+
+#Rajoute dans le retour prévu, le nombre d'élément au total et nombre d'éléments retournés
+summary:
+  enabled: 1
+  nbElementsAttributeName: "elementsReturn"
+  totalAttributeName: "total"

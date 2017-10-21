@@ -1,5 +1,7 @@
 package com.ijdan.training.nomenclatures.infrastructure.ExceptionHandling;
 
+import org.json.simple.JSONObject;
+
 public class InternalErrorException extends RuntimeException {
     String code;
 
@@ -11,4 +13,5 @@ public class InternalErrorException extends RuntimeException {
     public String getCode() {
         return code;
     }
+
 }

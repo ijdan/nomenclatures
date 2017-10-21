@@ -1,5 +1,6 @@
 package com.ijdan.training.nomenclatures.infrastructure.ExceptionHandling;
 
+import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,5 +34,10 @@ public class ExceptionHandlingController {
         response.setMessage(ex.getMessage());
 
         return new ResponseEntity<ExceptionResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    JSONObject toJON (){
+        JSONObject j = new JSONObject();
+        return j;
     }
 }

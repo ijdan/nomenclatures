@@ -1,7 +1,9 @@
 package com.ijdan.training.nomenclatures.domain;
 
-import com.sun.tools.javac.util.ArrayUtils;
+import org.json.simple.JSONArray;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +17,11 @@ public class Nomenclature {
     private Sort sort;
     private String enabledFieldsSelection;
     private List<Clause> clause;
+    private Cache cache;
+    private Summary summary;
 
     public Nomenclature() {
+
     }
 
     public String getResourceName() {
@@ -140,5 +145,38 @@ public class Nomenclature {
         }catch (NumberFormatException e){
             return "0";
         }
+    }
+
+    public Cache getCache() {
+        return cache;
+    }
+
+    public void setCache(Cache cache) {
+        this.cache = cache;
+    }
+
+    public Summary getSummary() {
+        return summary;
+    }
+
+    public void setSummary(Summary summary) {
+        this.summary = summary;
+    }
+
+    public JSONArray toJSONArray (ResultSet rs, List<String> selectedFields) throws SQLException {
+        JSONArray items = new JSONArray();
+
+        int length = selectedFields.size();
+        int cpt = 0;
+        while (rs.next()) {
+            cpt ++;
+            Map item = new HashMap<String, String>();
+            for (int i = 0; i < length; i++) {
+                item.put(selectedFields.get(i), rs.getString(selectedFields.get(i)));
+            }
+            items.add(item);
+        }
+
+        return items;
     }
 }

@@ -1,16 +1,23 @@
 # ===============================
 # = DATA SOURCE
 # ===============================
-cassandra:
-  keyspace: nomenclatures
-  IP: 127.0.0.1
+# H2
+spring.h2.console.enabled: true
+spring.h2.console.path: /h2
+# Datasource
+spring.datasource.url: jdbc:h2:file:~/test
+spring.datasource.username: user
+spring.datasource.password: pass
+spring.datasource.driver-class-name: org.h2.Driver
 
+# ===============================
+# = Logging
+# ===============================
 
 logging:
+  file: /Users/nadji/java/workspace/nomenclatures/src/main/java/com/ijdan/training/nomenclatures/logs/application.log
   level:
-    org.springframework.web: ERROR
-    com.mkyong: DEBUG
+    ROOT: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-  file: /Users/mkyong/application.log

@@ -7,10 +7,12 @@ public class Paging {
     public Paging() {
     }
 
-    public String isEnabled() {
+    public Boolean isEnabled() {
+        return this.getEnabled().equals("1");
+    }
+    public String getEnabled() {
         return enabled;
     }
-
     public void setEnabled(String enabled) {
         this.enabled = enabled;
     }
