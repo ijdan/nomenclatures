@@ -3,6 +3,7 @@ package com.ijdan.training.nomenclatures.repository;
 import com.ijdan.training.nomenclatures.domain.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -24,8 +25,15 @@ public class H2Connection {
     static long LOADED_TIME = 0;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
+    private String username;
+
+    private DatabasesProperties databasesProperties = new DatabasesProperties();
+
 
     public H2Connection(Cache cache) throws SQLException {
+        LOGGER.warn("username : " + databasesProperties.getH2().toString() );
+
+
         long currentTimeMillis = System.currentTimeMillis();
         int numberOfSecondsPassed = (int) ((currentTimeMillis - LOADED_TIME)/1000);
 

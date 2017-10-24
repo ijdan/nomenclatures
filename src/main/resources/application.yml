@@ -2,18 +2,15 @@
 # = DATA SOURCE
 # ===============================
 # H2
-spring.h2.console.enabled: true
-spring.h2.console.path: /h2
-# Datasource
-spring.datasource.url: jdbc:h2:file:~/test
-spring.datasource.username: user
-spring.datasource.password: pass
-spring.datasource.driver-class-name: org.h2.Driver
-
+databases:
+  H2:
+    url: jdbc:h2:file:~/test
+    username: user
+    password: pass
+    driver: org.h2.Driver
 # ===============================
 # = Logging
 # ===============================
-
 logging:
   file: /Users/nadji/java/workspace/nomenclatures/src/main/java/com/ijdan/training/nomenclatures/logs/application.log
   level:
