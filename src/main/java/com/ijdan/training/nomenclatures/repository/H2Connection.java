@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -19,24 +20,18 @@ public class H2Connection {
     static String FILE_DROP_DB = "/db/sql/drop-db.sql";
     static String FILE_CREATE_DB = "/db/sql/create-db.sql";
     static String FILE_INSERT_DATA = "/db/sql/insert-data.sql";
-    static String USER_NAME = "sa";
-    static String PASSWORD = "";
     static boolean LOADED = false;
     static long LOADED_TIME = 0;
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(H2Connection.class);
 
-    private String username;
+    private DatabasesProperties databasesProperties;
 
-    private DatabasesProperties databasesProperties = new DatabasesProperties();
-
-
-    public H2Connection(Cache cache) throws SQLException {
-        LOGGER.warn("username : " + databasesProperties.getH2().toString() );
-
+    public H2Connection(Cache cache, DatabasesProperties databasesProperties) throws SQLException {
+        this.databasesProperties = databasesProperties;
+        LOGGER.warn( databasesProperties.getH2().toString() );
 
         long currentTimeMillis = System.currentTimeMillis();
         int numberOfSecondsPassed = (int) ((currentTimeMillis - LOADED_TIME)/1000);
-
 
         if (cache.isEnabled() && numberOfSecondsPassed > Integer.parseInt(cache.getExpiration()) )
         {
@@ -54,7 +49,7 @@ public class H2Connection {
 
         }
 
-        Connection con = db.getConnection(USER_NAME, PASSWORD);
+        Connection con = db.getConnection(databasesProperties.getH2().getUsername(), databasesProperties.getH2().getPassword());
         stmt = con.createStatement();
     }
 

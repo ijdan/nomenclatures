@@ -1,6 +1,9 @@
 #le nom de la ressource telle que exposée dans les URI
-#c'est aussi le nom du fichier
+#c'est aussi le nom du fichier ({resourceName}.yaml)
 resourceName: pays
+
+#Nomenclature opérationnelle ?
+enbled: 1
 
 #Le nom technique de la table
 dbTable: t_pays
@@ -67,3 +70,9 @@ summary:
   enabled: 1
   nbElementsAttributeName: "elementsReturn"
   totalAttributeName: "total"
+
+#Les formats d'exposition (retour) acceptés. Les formats tolérés sont json, xml, csv
+produces:
+  - json
+  - xml
+  - csv

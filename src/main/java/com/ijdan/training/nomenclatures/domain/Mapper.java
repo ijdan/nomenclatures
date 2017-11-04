@@ -24,6 +24,9 @@ public class Mapper {
                  * Mapper le fichier YAML avec le POJO nomenclature
                  * */
                 nomenclature = mapper.readValue(file, Nomenclature.class);
+                if (!nomenclature.isEnabled()){
+                    nomenclature = null;
+                }
             } catch (Exception e) {
                 throw new ResourceNotFoundException("Err.00001", "!! Mapping Error with [" + nomenclatureName + "] resource !!");
             }

@@ -4,22 +4,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "databases")
+@ConfigurationProperties("databases")
 public class DatabasesProperties {
-    private H2Conf H2 = new H2Conf();
+    private H2 h2 = new H2();
 
-    public DatabasesProperties() {
+    public H2 getH2() {
+        return h2;
     }
 
-    public H2Conf getH2() {
-        return H2;
+    public void setH2(H2 h2) {
+        this.h2 = h2;
     }
-
-    public void setH2(H2Conf h2) {
-        H2 = h2;
-    }
-
-    public static class H2Conf {
+    public static class H2 {
         private String url;
         private String username;
         private String password;
@@ -59,12 +55,13 @@ public class DatabasesProperties {
 
         @Override
         public String toString() {
-            return "H2{" +
-                    "url='" + url + '\'' +
+            return "\n=====================\n" +
+                    "   H2{" +
+                    "url='" + this.getUrl() + '\'' +
                     "username='" + username + '\'' +
                     "password='" + password + '\'' +
                     ", driver='" + driver + '\'' +
-                    '}';
+                    "}\n=====================";
         }
     }
 }

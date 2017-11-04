@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class Nomenclature {
     private String resourceName;
+    private String enbled;
     private String dbTable;
     private Map<String, String> output = new HashMap<>();
     private Paging paging;
@@ -19,6 +20,7 @@ public class Nomenclature {
     private List<Clause> clause;
     private Cache cache;
     private Summary summary;
+    private List<String> produces;
 
     public Nomenclature() {
 
@@ -29,6 +31,17 @@ public class Nomenclature {
     }
     public void setResourceName(String resourceName) {
         this.resourceName = resourceName;
+    }
+
+    public String getEnbled() {
+        return enbled;
+    }
+
+    public void setEnbled(String enbled) {
+        this.enbled = enbled;
+    }
+    public boolean isEnabled(){
+        return this.getEnbled().equals("1");
     }
 
     public String getDbTable() {
@@ -73,6 +86,13 @@ public class Nomenclature {
         this.clause = clause;
     }
 
+    public List<String> getProduces() {
+        return produces;
+    }
+
+    public void setProduces(List<String> produces) {
+        this.produces = produces;
+    }
 
     /**
      * Fixe les attributs de la ressource à restituer
@@ -163,6 +183,23 @@ public class Nomenclature {
         this.summary = summary;
     }
 
+    public List<Map> getListMap (ResultSet rs, List<String> selectedFields) throws SQLException {
+        List<Map> items = new ArrayList<>();
+
+        int length = selectedFields.size();
+        int cpt = 0;
+        while (rs.next()) {
+            cpt ++;
+            Map item = new HashMap<String, String>();
+            for (int i = 0; i < length; i++) {
+                item.put(selectedFields.get(i), rs.getString(selectedFields.get(i)));
+            }
+            items.add(item);
+        }
+
+        return items;
+
+    }
     public JSONArray toJSONArray (ResultSet rs, List<String> selectedFields) throws SQLException {
         JSONArray items = new JSONArray();
 

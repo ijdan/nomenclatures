@@ -5,9 +5,10 @@
 databases:
   H2:
     url: jdbc:h2:file:~/test
-    username: user
-    password: pass
+    username: sa
+    password:
     driver: org.h2.Driver
+
 # ===============================
 # = Logging
 # ===============================
