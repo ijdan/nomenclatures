@@ -22,9 +22,7 @@ public class PrepareRequest {
             }else {
                 request.add("AND " + clause.getName() + "='" + String.join("', '", clause.getValues()) + "'");
             }
-
         }
-
         this.clause = request;
     }
 
@@ -43,7 +41,6 @@ public class PrepareRequest {
     public List<String> getClause() {
         return clause;
     }
-
     public void setClause(List<String> clause) {
         this.clause = clause;
     }

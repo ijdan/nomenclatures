@@ -200,20 +200,4 @@ public class Nomenclature {
         return items;
 
     }
-    public JSONArray toJSONArray (ResultSet rs, List<String> selectedFields) throws SQLException {
-        JSONArray items = new JSONArray();
-
-        int length = selectedFields.size();
-        int cpt = 0;
-        while (rs.next()) {
-            cpt ++;
-            Map item = new HashMap<String, String>();
-            for (int i = 0; i < length; i++) {
-                item.put(selectedFields.get(i), rs.getString(selectedFields.get(i)));
-            }
-            items.add(item);
-        }
-
-        return items;
-    }
 }

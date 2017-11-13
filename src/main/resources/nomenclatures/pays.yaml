@@ -68,7 +68,7 @@ cache:
 #Rajoute dans le retour prévu, le nombre d'élément au total et le nombre d'éléments retournés
 summary:
   enabled: 1
-  nbElementsAttributeName: "elementsReturn"
+  nbElementsAttributeName: "returned"
   totalAttributeName: "total"
 
 #Les formats d'exposition (retour) acceptés. Les formats tolérés sont json, xml, csv

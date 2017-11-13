@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -24,11 +23,12 @@ public class H2Connection {
     static long LOADED_TIME = 0;
     private static final Logger LOGGER = LoggerFactory.getLogger(H2Connection.class);
 
+    @Autowired
     private DatabasesProperties databasesProperties;
 
-    public H2Connection(Cache cache, DatabasesProperties databasesProperties) throws SQLException {
-        this.databasesProperties = databasesProperties;
-        LOGGER.warn( databasesProperties.getH2().toString() );
+    @Autowired
+    public H2Connection(Cache cache) throws SQLException {
+        LOGGER.warn(">>>>>>>>>" + databasesProperties.getH2().toString() );
 
         long currentTimeMillis = System.currentTimeMillis();
         int numberOfSecondsPassed = (int) ((currentTimeMillis - LOADED_TIME)/1000);
