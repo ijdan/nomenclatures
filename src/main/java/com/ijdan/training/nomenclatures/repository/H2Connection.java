@@ -27,6 +27,10 @@ public class H2Connection {
     private DatabasesProperties databasesProperties;
 
     @Autowired
+    public void setDatabasesProperties(DatabasesProperties databasesProperties) {
+        this.databasesProperties = databasesProperties;
+    }
+    @Autowired
     public H2Connection(Cache cache) throws SQLException {
         LOGGER.warn(">>>>>>>>>" + databasesProperties.getH2().toString() );
 
