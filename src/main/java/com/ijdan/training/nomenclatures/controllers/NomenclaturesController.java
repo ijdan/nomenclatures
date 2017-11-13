@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,8 @@ import java.util.Map;
 @RequestMapping(value = "/T1.0/nomenclatures")
 public class NomenclaturesController {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    DatabasesProperties databasesProperties;
 
     @RequestMapping(
             value = "/{nomenclatureName}",
@@ -50,6 +51,7 @@ public class NomenclaturesController {
             HttpServletRequest httpRequest,
             HttpServletResponse httpResponse
     ) {
+        LOGGER.warn(databasesProperties.getH2().toString() );
         /**
          * Construction d'un objet Nomenclature
          * */
@@ -77,7 +79,7 @@ public class NomenclaturesController {
 
             PrepareRequest prepareRequest = new PrepareRequest(nomenclature);
             try {
-                H2Connection h2c = new H2Connection(nomenclature.getCache());
+                H2Connection h2c = new H2Connection(nomenclature.getCache(), databasesProperties);
                 ResultSet rs = h2c.executeQuery(prepareRequest.getCallRequest(selectedFields, sortField, sortSens, paginPacket, offset));
                 List<Map> values = nomenclature.getListMap(rs, selectedFields);
                 response.put(nomenclature.getResourceName(), values);

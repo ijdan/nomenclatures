@@ -23,16 +23,12 @@ public class H2Connection {
     static long LOADED_TIME = 0;
     private static final Logger LOGGER = LoggerFactory.getLogger(H2Connection.class);
 
-    @Autowired
     private DatabasesProperties databasesProperties;
 
-    @Autowired
-    public void setDatabasesProperties(DatabasesProperties databasesProperties) {
-        this.databasesProperties = databasesProperties;
-    }
-    @Autowired
-    public H2Connection(Cache cache) throws SQLException {
+    public H2Connection(Cache cache, DatabasesProperties databasesProperties) throws SQLException {
         LOGGER.warn(">>>>>>>>>" + databasesProperties.getH2().toString() );
+
+        this.databasesProperties = databasesProperties;
 
         long currentTimeMillis = System.currentTimeMillis();
         int numberOfSecondsPassed = (int) ((currentTimeMillis - LOADED_TIME)/1000);
