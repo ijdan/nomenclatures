@@ -30,8 +30,13 @@ import java.util.Map;
 @RequestMapping(value = "/T1.0/nomenclatures")
 public class NomenclaturesController {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    private H2Connection h2connection;
+
     @Autowired
-    DatabasesProperties databasesProperties;
+    public void setH2connection(H2Connection h2connection) {
+        this.h2connection = h2connection;
+    }
 
     @RequestMapping(
             value = "/{nomenclatureName}",
@@ -51,7 +56,7 @@ public class NomenclaturesController {
             HttpServletRequest httpRequest,
             HttpServletResponse httpResponse
     ) {
-        LOGGER.warn(databasesProperties.getH2().toString() );
+        LOGGER.warn(h2connection.getDatabasesProperties().getH2().toString() );
         /**
          * Construction d'un objet Nomenclature
          * */
@@ -79,8 +84,8 @@ public class NomenclaturesController {
 
             PrepareRequest prepareRequest = new PrepareRequest(nomenclature);
             try {
-                H2Connection h2c = new H2Connection(nomenclature.getCache(), databasesProperties);
-                ResultSet rs = h2c.executeQuery(prepareRequest.getCallRequest(selectedFields, sortField, sortSens, paginPacket, offset));
+                h2connection.setCache(nomenclature.getCache());
+                ResultSet rs = h2connection.executeQuery(prepareRequest.getCallRequest(selectedFields, sortField, sortSens, paginPacket, offset));
                 List<Map> values = nomenclature.getListMap(rs, selectedFields);
                 response.put(nomenclature.getResourceName(), values);
 
@@ -88,7 +93,7 @@ public class NomenclaturesController {
                 if (nomenclature.getSummary().isEnabled()){
                     response.put(nomenclature.getSummary().getNbElementsAttributeName(), String.valueOf(values.size()));
 
-                    rs = h2c.executeQuery( prepareRequest.getTotalRequest() );
+                    rs = h2connection.executeQuery( prepareRequest.getTotalRequest() );
                     if (rs.next()) {
                         response.put(nomenclature.getSummary().getTotalAttributeName(), rs.getString("TOTAL"));
                     }

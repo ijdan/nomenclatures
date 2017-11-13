@@ -22,10 +22,24 @@ public class H2Connection {
     static boolean LOADED = false;
     static long LOADED_TIME = 0;
     private static final Logger LOGGER = LoggerFactory.getLogger(H2Connection.class);
+    private Cache cache;
 
     private DatabasesProperties databasesProperties;
 
-    public H2Connection(Cache cache, DatabasesProperties databasesProperties) throws SQLException {
+    @Autowired
+    public void setDatabasesProperties(DatabasesProperties databasesProperties) {
+        this.databasesProperties = databasesProperties;
+    }
+
+    public DatabasesProperties getDatabasesProperties() {
+        return databasesProperties;
+    }
+
+    public void setCache(Cache cache) {
+        this.cache = cache;
+    }
+
+    public H2Connection() throws SQLException {
         LOGGER.warn(">>>>>>>>>" + databasesProperties.getH2().toString() );
 
         this.databasesProperties = databasesProperties;
