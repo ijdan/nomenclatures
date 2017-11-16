@@ -1,18 +1,21 @@
 package com.ijdan.training.nomenclatures.repository;
 
-import com.ijdan.training.nomenclatures.domain.Cache;
+import com.ijdan.training.nomenclatures.domain.Nomenclature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@Component
 public class H2Connection {
     private static EmbeddedDatabase db = null;
     private static Statement stmt = null;
@@ -22,28 +25,14 @@ public class H2Connection {
     static boolean LOADED = false;
     static long LOADED_TIME = 0;
     private static final Logger LOGGER = LoggerFactory.getLogger(H2Connection.class);
-    private Cache cache;
-
-    private DatabasesProperties databasesProperties;
 
     @Autowired
-    public void setDatabasesProperties(DatabasesProperties databasesProperties) {
-        this.databasesProperties = databasesProperties;
-    }
-
-    public DatabasesProperties getDatabasesProperties() {
-        return databasesProperties;
-    }
-
-    public void setCache(Cache cache) {
-        this.cache = cache;
-    }
+    private DatabasesProperties databasesProperties;
 
     public H2Connection() throws SQLException {
-        LOGGER.warn(">>>>>>>>>" + databasesProperties.getH2().toString() );
-
-        this.databasesProperties = databasesProperties;
-
+        //Loeiz, j'ai une erreur ici. Il n'arive pas à injecter databasesProperties
+        LOGGER.warn(databasesProperties.getH2().toString());
+/*
         long currentTimeMillis = System.currentTimeMillis();
         int numberOfSecondsPassed = (int) ((currentTimeMillis - LOADED_TIME)/1000);
 
@@ -60,11 +49,11 @@ public class H2Connection {
             LOGGER.warn("Utilisation de la base H2 sans raffraîchissement");
             db = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
                     .build();
-
         }
-
+/*
         Connection con = db.getConnection(databasesProperties.getH2().getUsername(), databasesProperties.getH2().getPassword());
         stmt = con.createStatement();
+*/
     }
 
 

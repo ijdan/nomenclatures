@@ -11,10 +11,10 @@ public class DatabasesProperties {
     public H2 getH2() {
         return h2;
     }
-
     public void setH2(H2 h2) {
         this.h2 = h2;
     }
+
     public static class H2 {
         private String url;
         private String username;
@@ -55,13 +55,12 @@ public class DatabasesProperties {
 
         @Override
         public String toString() {
-            return "\n=====================\n" +
-                    "   H2{" +
-                    "url='" + this.getUrl() + '\'' +
-                    "username='" + username + '\'' +
-                    "password='" + password + '\'' +
+            return "H2{" +
+                    "url='" + url + '\'' +
+                    ", username='" + username + '\'' +
+                    ", password='" + password + '\'' +
                     ", driver='" + driver + '\'' +
-                    "}\n=====================";
+                    '}';
         }
     }
 }

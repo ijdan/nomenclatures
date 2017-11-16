@@ -5,14 +5,18 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.ijdan.training.nomenclatures.infrastructure.ExceptionHandling.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
-
+@Component
 public class Mapper {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private static Nomenclature nomenclature;
 
-    public Mapper(String nomenclatureName) {
+    public Mapper() {
+    }
+
+    public Nomenclature getNomenclature(String nomenclatureName) {
         if (nomenclature == null || !nomenclature.getResourceName().equals(nomenclatureName)) {
             String pathYMLFile = "nomenclatures/" + nomenclatureName + ".yaml";
             LOGGER.warn("Chargement du fichier [" + pathYMLFile + "]");
@@ -27,14 +31,13 @@ public class Mapper {
                 if (!nomenclature.isEnabled()){
                     nomenclature = null;
                 }
+
             } catch (Exception e) {
                 throw new ResourceNotFoundException("Err.00001", "!! Mapping Error with [" + nomenclatureName + "] resource !!");
             }
         }
 
-    }
-
-    public static Nomenclature getNomenclature() {
         return nomenclature;
     }
+
 }

@@ -1,5 +1,8 @@
 package com.ijdan.training.nomenclatures.domain;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 public class Cache {
     private String enabled;
     private String expiration;
@@ -10,6 +13,7 @@ public class Cache {
     public String getEnabled() {
         return enabled;
     }
+    @Autowired
     public Boolean isEnabled() {
         return this.getEnabled().equals("1");
     }
@@ -18,6 +22,7 @@ public class Cache {
         this.enabled = enabled;
     }
 
+    @Autowired
     public String getExpiration() {
         return expiration;
     }

@@ -1,6 +1,7 @@
 package com.ijdan.training.nomenclatures.domain;
 
 import org.json.simple.JSONArray;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +22,11 @@ public class Nomenclature {
     private Cache cache;
     private Summary summary;
     private List<String> produces;
+
+    private PrepareRequest prepareRequest;
+    public void setPrepareRequest(PrepareRequest prepareRequest) {
+        this.prepareRequest = prepareRequest;
+    }
 
     public Nomenclature() {
 
@@ -121,7 +127,7 @@ public class Nomenclature {
      * */
     public String getSortField (String sortFields){
         if ( sortFields !=  null && !sortFields.isEmpty() && this.getSort().getFields().contains(sortFields) ){
-           return sortFields;
+            return sortFields;
         }else {
             return this.getSort().getFields().get(0);
         }
@@ -200,4 +206,6 @@ public class Nomenclature {
         return items;
 
     }
+
+
 }
