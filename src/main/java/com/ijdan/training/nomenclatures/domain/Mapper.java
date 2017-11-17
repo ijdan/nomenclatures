@@ -10,11 +10,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 @Component
 public class Mapper {
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Mapper.class);
     private static Nomenclature nomenclature;
-
-    public Mapper() {
-    }
 
     public Nomenclature getNomenclature(String nomenclatureName) {
         if (nomenclature == null || !nomenclature.getResourceName().equals(nomenclatureName)) {

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 public class Nomenclature {
     private String resourceName;
     private String enbled;
@@ -105,7 +104,6 @@ public class Nomenclature {
      * */
     public List<String> getOutputKeys (List<String> selectedFields){
         List<String> fields = new ArrayList<String>();
-
         List<String> outputKeys = new ArrayList<String>();
 
         for (Map.Entry<String, String> key : this.getOutput().entrySet()) {
@@ -129,7 +127,7 @@ public class Nomenclature {
         if ( sortFields !=  null && !sortFields.isEmpty() && this.getSort().getFields().contains(sortFields) ){
             return sortFields;
         }else {
-            return this.getSort().getFields().get(0);
+            return this.getSort().getFields().get(0).toString();
         }
     }
 

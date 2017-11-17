@@ -1,6 +1,6 @@
 package com.ijdan.training.nomenclatures.repository;
 
-import com.ijdan.training.nomenclatures.domain.Nomenclature;
+import com.ijdan.training.nomenclatures.domain.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,11 +27,15 @@ public class H2Connection {
 
     @Autowired
     private DatabasesProperties databasesProperties;
+    public DatabasesProperties getDatabasesProperties() {
+        return databasesProperties;
+    }
 
-    public H2Connection() throws SQLException {
-        //Loeiz, j'ai une erreur ici. Il n'arive pas à injecter databasesProperties
-        LOGGER.warn(databasesProperties.getH2().toString());
-/*
+    public H2Connection(DatabasesProperties databasesProperties) {
+        this.databasesProperties = databasesProperties;
+    }
+
+    public void createStatement(Cache cache) throws SQLException{
         long currentTimeMillis = System.currentTimeMillis();
         int numberOfSecondsPassed = (int) ((currentTimeMillis - LOADED_TIME)/1000);
 
@@ -50,10 +53,10 @@ public class H2Connection {
             db = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
                     .build();
         }
-/*
+
         Connection con = db.getConnection(databasesProperties.getH2().getUsername(), databasesProperties.getH2().getPassword());
-        stmt = con.createStatement();
-*/
+
+        this.stmt = con.createStatement();
     }
 
 

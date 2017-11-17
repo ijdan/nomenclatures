@@ -7,6 +7,11 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("databases")
 public class DatabasesProperties {
     private H2 h2 = new H2();
+    private String t = "d";
+
+    public String getT() {
+        return t;
+    }
 
     public H2 getH2() {
         return h2;
