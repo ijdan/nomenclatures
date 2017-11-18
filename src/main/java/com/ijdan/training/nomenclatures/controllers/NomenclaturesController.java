@@ -53,18 +53,10 @@ public class NomenclaturesController {
         Nomenclature nomenclature = mapper.getNomenclature(nomenclatureName);
         HashMap response = prepareResponse.get(nomenclature, httpRequest);
 
-        String mediaType;
-        if (httpRequest.getContentType() == null){
-            mediaType = MediaType.APPLICATION_JSON_VALUE;
-        }else {
-            mediaType = httpRequest.getContentType();
-        }
-
         Response r = new Response(response);
+        HttpHeaders httpHeaders= new HttpHeaders();
 
-        HttpHeaders headers = new HttpHeaders();
-        final HttpHeaders httpHeaders= new HttpHeaders();
-        switch (mediaType){
+        switch (httpRequest.getHeader("accept")){
             case MediaType.APPLICATION_XML_VALUE:
                 httpHeaders.setContentType(MediaType.APPLICATION_XML);
                 return new ResponseEntity<String>(r.getXMLResponse(), httpHeaders, HttpStatus.OK);
