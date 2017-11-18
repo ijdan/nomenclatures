@@ -21,10 +21,9 @@ public class Mapper {
 
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             try {
+                //noinspection ConstantConditions
                 File file = new File(getClass().getClassLoader().getResource(pathYMLFile).getFile());
-                /**
-                 * Mapper le fichier YAML avec le POJO nomenclature
-                 * */
+                // Mapper le fichier YAML avec le POJO nomenclature
                 nomenclature = mapper.readValue(file, Nomenclature.class);
                 if (!nomenclature.isEnabled()){
                     nomenclature = null;

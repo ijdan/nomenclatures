@@ -1,7 +1,6 @@
 package com.ijdan.training.nomenclatures.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 public class Cache {
     private String enabled;

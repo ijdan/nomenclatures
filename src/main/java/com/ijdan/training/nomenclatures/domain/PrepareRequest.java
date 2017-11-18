@@ -1,8 +1,5 @@
 package com.ijdan.training.nomenclatures.domain;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +9,7 @@ public class PrepareRequest {
 
     public PrepareRequest(Nomenclature nomenclature) {
         this.nomenclature = nomenclature;
-        List<String> request = new ArrayList<String>();
+        List<String> request = new ArrayList<>();
         request.add("WHERE 1=1");
 
         List<Clause> clauses = nomenclature.getClause();
@@ -27,7 +24,7 @@ public class PrepareRequest {
     }
 
     public String getTotalRequest() {
-        List<String> request = new ArrayList<String>();
+        List<String> request = new ArrayList<>();
 
         request.add("SELECT COUNT(*) as TOTAL");
 
@@ -46,9 +43,9 @@ public class PrepareRequest {
     }
 
     public String getCallRequest (List<String> selectedFields, String sortField, String sortSens, String paginPacket, String offset){
-        List<String> request = new ArrayList<String>();
+        List<String> request = new ArrayList<>();
 
-        List<String> selectedColumn = new ArrayList<String>();
+        List<String> selectedColumn = new ArrayList<>();
         for(String sf : selectedFields){
             selectedColumn.add(this.nomenclature.getOutput().get(sf) + " AS " + sf);
         }

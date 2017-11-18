@@ -34,7 +34,7 @@ public class H2Connection {
     public void createStatement(Cache cache) throws SQLException{
         long currentTimeMillis = System.currentTimeMillis();
         int numberOfSecondsPassed = (int) ((currentTimeMillis - LOADED_TIME)/1000);
-        EmbeddedDatabase db = null;
+        EmbeddedDatabase db;
         if (cache.isEnabled() && numberOfSecondsPassed > Integer.parseInt(cache.getExpiration()) )
         {
             LOGGER.warn("Chargement des données depuis la source maître : raffraîchissement de la H2");

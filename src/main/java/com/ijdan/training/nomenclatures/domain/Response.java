@@ -27,9 +27,9 @@ public class Response {
 
     public String getXMLResponse (){
         String type;
-        List<String> resp = new ArrayList<String>();
+        List<String> resp = new ArrayList<>();
         resp.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        List<Map> elements = new ArrayList<>();
+        List<Map> elements;
         for (String key : this.getResponse().keySet()) {
             type = this.getResponse().get(key).getClass().getSimpleName();
             if (type.equals("String")){
@@ -56,10 +56,10 @@ public class Response {
 
     public String getCSVResponse(){
         String type;
-        List<String> resp = new ArrayList<String>();
-        List<String> head = new ArrayList<String>();
+        List<String> resp = new ArrayList<>();
+        List<String> head = new ArrayList<>();
 
-        List<Map> elements = new ArrayList<>();
+        List<Map> elements;
         for (String key : this.getResponse().keySet()) {
             type = this.getResponse().get(key).getClass().getSimpleName();
             if (type.equals("String")){

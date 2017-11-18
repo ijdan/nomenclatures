@@ -101,8 +101,8 @@ public class Nomenclature {
      * Fixe les attributs de la ressource à restituer
      * */
     public List<String> getOutputKeys (List<String> selectedFields){
-        List<String> fields = new ArrayList<String>();
-        List<String> outputKeys = new ArrayList<String>();
+        List<String> fields = new ArrayList<>();
+        List<String> outputKeys = new ArrayList<>();
 
         for (Map.Entry<String, String> key : this.getOutput().entrySet()) {
             fields.add( key.getKey() );
@@ -125,7 +125,7 @@ public class Nomenclature {
         if ( sortFields !=  null && !sortFields.isEmpty() && this.getSort().getFields().contains(sortFields) ){
             return sortFields;
         }else {
-            return this.getSort().getFields().get(0).toString();
+            return this.getSort().getFields().get(0);
         }
     }
 
@@ -136,7 +136,7 @@ public class Nomenclature {
         if ( sortSens !=  null && !sortSens.isEmpty() && this.getSort().getSens().contains(sortSens) ){
             return sortSens;
         }else {
-            return this.getSort().getSens().get(0).toString();
+            return this.getSort().getSens().get(0);
         }
 
     }
@@ -187,14 +187,10 @@ public class Nomenclature {
 
     public List<Map> getListMap (ResultSet rs, List<String> selectedFields) throws SQLException {
         List<Map> items = new ArrayList<>();
-
-        int length = selectedFields.size();
-        int cpt = 0;
         while (rs.next()) {
-            cpt ++;
             Map item = new HashMap<String, String>();
-            for (int i = 0; i < length; i++) {
-                item.put(selectedFields.get(i), rs.getString(selectedFields.get(i)));
+            for (String selectedField : selectedFields) {
+                item.put(selectedField, rs.getString(selectedField));
             }
             items.add(item);
         }

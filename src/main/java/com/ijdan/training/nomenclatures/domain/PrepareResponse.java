@@ -33,6 +33,7 @@ public class PrepareResponse {
         this.nomenclatureConfig = nomenclatureConfig;
         /**
          * Validation des RequestParam
+         * Evite les éventuelles injections SQL
          * */
         //Validation des attributs souhaités en sorite
         selectedFields = nomenclatureConfig.getOutputKeys(selectedFields);
@@ -63,7 +64,7 @@ public class PrepareResponse {
                 }
             }
         }catch (SQLException e){
-            LOGGER.error("Erreur d'exécution de la requête : " + query.toString());
+            LOGGER.error("Erreur d'exécution de la requête : " + query);
             throw new ResourceNotFoundException("Err.00003", "!! Nomenclature inexistante !!");
         }
 
@@ -88,7 +89,7 @@ public class PrepareResponse {
             List<Map> values = nomenclatureConfig.getListMap(rs, selectedFields);
             response.put(nomenclatureConfig.getResourceName(), values);
         }catch (SQLException e){
-            LOGGER.error("Erreur d'exécution de la requête : " + query.toString());
+            LOGGER.error("Erreur d'exécution de la requête : " + query);
             throw new InternalErrorException("Err.00003", "!! Erreur d'exécution de la requête !!");
         }
 
@@ -101,22 +102,22 @@ public class PrepareResponse {
         switch (httpRequest.getHeader("accept")){
             case MediaType.APPLICATION_XML_VALUE:
                 httpHeaders.setContentType(MediaType.APPLICATION_XML);
-                return new ResponseEntity<String>((new Response(response)).getXMLResponse(), httpHeaders, HttpStatus.OK);
+                return new ResponseEntity<>((new Response(response)).getXMLResponse(), httpHeaders, HttpStatus.OK);
 
             case MediaType.TEXT_PLAIN_VALUE:
                 httpHeaders.setContentType(TEXT_PLAIN);
-                return new ResponseEntity<String>(new Response(response).getCSVResponse(), httpHeaders, HttpStatus.OK);
+                return new ResponseEntity<>(new Response(response).getCSVResponse(), httpHeaders, HttpStatus.OK);
 
             default:
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                return new ResponseEntity<String>(JSONObject.toJSONString(response), httpHeaders, HttpStatus.OK);
+                return new ResponseEntity<>(JSONObject.toJSONString(response), httpHeaders, HttpStatus.OK);
         }
 
     }
 
 
     public String getQueryTotal() {
-        List<String> request = new ArrayList<String>();
+        List<String> request = new ArrayList<>();
 
         request.add("SELECT COUNT(*) as TOTAL");
 
@@ -141,9 +142,9 @@ public class PrepareResponse {
 
 
     public String getQueryCollection (List<String> selectedFields, String sortField, String sortSens, String paginPacket, String offset){
-        List<String> request = new ArrayList<String>();
+        List<String> request = new ArrayList<>();
 
-        List<String> selectedColumn = new ArrayList<String>();
+        List<String> selectedColumn = new ArrayList<>();
         for(String sf : selectedFields){
             selectedColumn.add(this.nomenclatureConfig.getOutput().get(sf) + " AS " + sf);
         }
@@ -163,9 +164,9 @@ public class PrepareResponse {
     }
 
     public String getQueryItem(String id, List<String> selectedFields){
-        List<String> request = new ArrayList<String>();
+        List<String> request = new ArrayList<>();
 
-        List<String> selectedColumn = new ArrayList<String>();
+        List<String> selectedColumn = new ArrayList<>();
         for(String sf : selectedFields){
             selectedColumn.add(this.nomenclatureConfig.getOutput().get(sf) + " AS " + sf);
         }

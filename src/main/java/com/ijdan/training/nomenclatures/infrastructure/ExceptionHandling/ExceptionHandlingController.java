@@ -15,7 +15,7 @@ public class ExceptionHandlingController {
         response.setCode(HttpStatus.NOT_FOUND.name() +"."+ ex.getCode());
         response.setMessage(ex.getMessage());
 
-        return new ResponseEntity<ExceptionResponse>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -24,7 +24,7 @@ public class ExceptionHandlingController {
         response.setCode(HttpStatus.BAD_REQUEST.name() +"."+  ex.getCode());
         response.setMessage(ex.getMessage());
 
-        return new ResponseEntity<ExceptionResponse>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InternalErrorException.class)
@@ -33,7 +33,7 @@ public class ExceptionHandlingController {
         response.setCode(HttpStatus.INTERNAL_SERVER_ERROR.name() +"."+  ex.getCode());
         response.setMessage(ex.getMessage());
 
-        return new ResponseEntity<ExceptionResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     JSONObject toJON (){
