@@ -8,6 +8,7 @@ server:
 # = DATA SOURCE
 # ===============================
 # H2
+# Console: http://localhost:8090/h2-console/
 databases:
   H2:
     url: jdbc:h2:file:~/test

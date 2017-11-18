@@ -8,6 +8,9 @@ enbled: 1
 #Le nom technique de la table
 dbTable: t_pays
 
+#Le nom du champs clé primaire
+pk: code
+
 #les attributs retournés dans les appels REST.
 #à gauche le nom tel que présent dans le retour
 #à droite le nom technique dans la table

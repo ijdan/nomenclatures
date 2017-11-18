@@ -16,7 +16,6 @@ import java.sql.Statement;
 
 @Component
 public class H2Connection {
-    private static EmbeddedDatabase db = null;
     private static Statement stmt = null;
     static String FILE_DROP_DB = "/db/sql/drop-db.sql";
     static String FILE_CREATE_DB = "/db/sql/create-db.sql";
@@ -27,9 +26,6 @@ public class H2Connection {
 
     @Autowired
     private DatabasesProperties databasesProperties;
-    public DatabasesProperties getDatabasesProperties() {
-        return databasesProperties;
-    }
 
     public H2Connection(DatabasesProperties databasesProperties) {
         this.databasesProperties = databasesProperties;
@@ -38,7 +34,7 @@ public class H2Connection {
     public void createStatement(Cache cache) throws SQLException{
         long currentTimeMillis = System.currentTimeMillis();
         int numberOfSecondsPassed = (int) ((currentTimeMillis - LOADED_TIME)/1000);
-
+        EmbeddedDatabase db = null;
         if (cache.isEnabled() && numberOfSecondsPassed > Integer.parseInt(cache.getExpiration()) )
         {
             LOGGER.warn("Chargement des données depuis la source maître : raffraîchissement de la H2");

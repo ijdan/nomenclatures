@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+
 @Component
 public class Mapper {
     private final static Logger LOGGER = LoggerFactory.getLogger(Mapper.class);
@@ -16,7 +17,7 @@ public class Mapper {
     public Nomenclature getNomenclature(String nomenclatureName) {
         if (nomenclature == null || !nomenclature.getResourceName().equals(nomenclatureName)) {
             String pathYMLFile = "nomenclatures/" + nomenclatureName + ".yaml";
-            LOGGER.warn("Chargement du fichier [" + pathYMLFile + "]");
+            LOGGER.info("Chargement du fichier [" + pathYMLFile + "]");
 
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             try {

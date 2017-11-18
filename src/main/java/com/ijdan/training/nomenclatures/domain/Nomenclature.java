@@ -1,8 +1,5 @@
 package com.ijdan.training.nomenclatures.domain;
 
-import org.json.simple.JSONArray;
-import org.springframework.stereotype.Component;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,6 +10,7 @@ public class Nomenclature {
     private String resourceName;
     private String enbled;
     private String dbTable;
+    private String pk;
     private Map<String, String> output = new HashMap<>();
     private Paging paging;
     private Sort sort;
@@ -22,14 +20,7 @@ public class Nomenclature {
     private Summary summary;
     private List<String> produces;
 
-    private PrepareRequest prepareRequest;
-    public void setPrepareRequest(PrepareRequest prepareRequest) {
-        this.prepareRequest = prepareRequest;
-    }
-
-    public Nomenclature() {
-
-    }
+    public Nomenclature() {}
 
     public String getResourceName() {
         return resourceName;
@@ -54,6 +45,13 @@ public class Nomenclature {
     }
     public void setDbTable(String dbTable) {
         this.dbTable = dbTable;
+    }
+
+    public String getPk() {
+        return pk;
+    }
+    public void setPk(String pk) {
+        this.pk = pk;
     }
 
     public Map<String, String> getOutput() {
@@ -138,7 +136,7 @@ public class Nomenclature {
         if ( sortSens !=  null && !sortSens.isEmpty() && this.getSort().getSens().contains(sortSens) ){
             return sortSens;
         }else {
-            return this.getSort().getSens().get(0);
+            return this.getSort().getSens().get(0).toString();
         }
 
     }

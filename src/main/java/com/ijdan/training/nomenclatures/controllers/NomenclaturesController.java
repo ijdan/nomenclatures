@@ -1,20 +1,14 @@
 package com.ijdan.training.nomenclatures.controllers;
 
 import com.ijdan.training.nomenclatures.domain.*;
-import com.ijdan.training.nomenclatures.repository.H2Connection;
-
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,13 +23,20 @@ public class NomenclaturesController {
     @Autowired
     private PrepareResponse prepareResponse;
 
+    /***
+     * endpoint collection
+     * Restitue tous itèmes d'une collection
+     * Possibilité de sélectionner les données souhaitées en retour
+     * De préciser la donner à trier le sens du tri
+     * De paginer et de positionner le curseur de la récupération
+     */
     @RequestMapping(
             value = "/{nomenclatureName}",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<String> showNomenclatures (
+    ResponseEntity<String> collecttion (
             @PathVariable(value="nomenclatureName") String nomenclatureName,
 
             @RequestParam(value="selectedFields", required = false) List<String> selectedFields,
@@ -44,32 +45,36 @@ public class NomenclaturesController {
             @RequestParam(value="paginPacket", required = false) String paginPacket,
             @RequestParam(value="offset", required = false) String offset,
 
-            HttpServletRequest httpRequest,
-            HttpServletResponse httpResponse
+            HttpServletRequest httpRequest
     ) {
-        /**
-         * Construction d'un objet Nomenclature
-         * */
-        Nomenclature nomenclature = mapper.getNomenclature(nomenclatureName);
-        HashMap response = prepareResponse.get(nomenclature, httpRequest);
+        Nomenclature nomenclatureConfig = mapper.getNomenclature(nomenclatureName);
+        HashMap response = prepareResponse.getCollection(nomenclatureConfig, selectedFields, sortField, sortSens, paginPacket, offset);
 
-        Response r = new Response(response);
-        HttpHeaders httpHeaders= new HttpHeaders();
-
-        switch (httpRequest.getHeader("accept")){
-            case MediaType.APPLICATION_XML_VALUE:
-                httpHeaders.setContentType(MediaType.APPLICATION_XML);
-                return new ResponseEntity<String>(r.getXMLResponse(), httpHeaders, HttpStatus.OK);
-
-            case MediaType.TEXT_PLAIN_VALUE:
-                httpHeaders.setContentType(MediaType.TEXT_PLAIN);
-                return new ResponseEntity<String>(r.getCSVResponse(), httpHeaders, HttpStatus.OK);
-
-            default:
-                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                return new ResponseEntity<String>(JSONObject.toJSONString(response), httpHeaders, HttpStatus.OK);
-        }
-
+        return prepareResponse.adaptContentType(response, httpRequest);
     }
 
+
+    /***
+     * endpoint item
+     * Récupère les données d'un itème donné
+     * avec possibilité de sélectionner les données souhaitées pour l'itème demandé
+     */
+    @RequestMapping(
+            value = "/{nomenclatureName}/{id}",
+            method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<String> item (
+            @PathVariable(value="nomenclatureName") String nomenclatureName,
+            @PathVariable(value="id") String id,
+            @RequestParam(value="selectedFields", required = false) List<String> selectedFields,
+
+            HttpServletRequest httpRequest
+    ){
+        Nomenclature nomenclatureConfig = mapper.getNomenclature(nomenclatureName);
+        HashMap response = prepareResponse.getItem(nomenclatureConfig, id, selectedFields);
+
+        return prepareResponse.adaptContentType(response, httpRequest);
+    }
 }
