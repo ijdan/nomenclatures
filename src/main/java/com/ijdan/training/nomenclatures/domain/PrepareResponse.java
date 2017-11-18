@@ -3,7 +3,10 @@ package com.ijdan.training.nomenclatures.domain;
 import com.ijdan.training.nomenclatures.infrastructure.ExceptionHandling.InternalErrorException;
 import com.ijdan.training.nomenclatures.infrastructure.ExceptionHandling.ResourceNotFoundException;
 import com.ijdan.training.nomenclatures.repository.H2Connection;
-import org.json.simple.JSONObject;
+import com.ijdan.training.nomenclatures.response.CsvResponse;
+import com.ijdan.training.nomenclatures.response.IFormatter;
+import com.ijdan.training.nomenclatures.response.JsonResponse;
+import com.ijdan.training.nomenclatures.response.XmlResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +32,7 @@ public class PrepareResponse {
 
     private Nomenclature nomenclatureConfig;
 
-    public HashMap<String, Object> getCollection(Nomenclature nomenclatureConfig, List<String> selectedFields, String sortField, String sortSens, String paginPacket, String offset){
+    public HashMap<String, List<Map>> getCollection(Nomenclature nomenclatureConfig, List<String> selectedFields, String sortField, String sortSens, String paginPacket, String offset){
         this.nomenclatureConfig = nomenclatureConfig;
         /**
          * Validation des RequestParam
@@ -38,21 +41,20 @@ public class PrepareResponse {
         //Validation des attributs souhaités en sorite
         selectedFields = nomenclatureConfig.getOutputKeys(selectedFields);
         //Validation l'attribut sur lequel le tri est permis
-        sortField = nomenclatureConfig.getSortField (sortField);
+        sortField = nomenclatureConfig.getSort().getSortField (sortField);
         //Validation du sens du tri
-        sortSens = nomenclatureConfig.getSortSens (sortSens);
+        sortSens = nomenclatureConfig.getSort().getSortSens (sortSens);
         //Validation du nombre d'éléments par appels souhaité par l'appelant
-        paginPacket = nomenclatureConfig.getPagingPacket (paginPacket);
+        paginPacket = nomenclatureConfig.getPaging().getPagingPacket (paginPacket);
         //Validation de l'offset : le positionnement du paquet à retourner
         offset = nomenclatureConfig.getOffset (offset);
 
         HashMap response = new HashMap<String, Object>();
         String query = this.getQueryCollection(selectedFields, sortField, sortSens, paginPacket, offset);
-        LOGGER.warn("quert = "+ query);
         try {
             h2connection.createStatement(nomenclatureConfig.getCache());
             ResultSet rs = h2connection.executeQuery(query);
-            List<Map> values = nomenclatureConfig.getListMap(rs, selectedFields);
+            List<Map> values = this.getListMap(rs, selectedFields);
             response.put(nomenclatureConfig.getResourceName(), values);
 
             if (nomenclatureConfig.getSummary().isEnabled()){
@@ -65,13 +67,14 @@ public class PrepareResponse {
             }
         }catch (SQLException e){
             LOGGER.error("Erreur d'exécution de la requête : " + query);
+            LOGGER.error("e >>" + e.getMessage());
             throw new ResourceNotFoundException("Err.00003", "!! Nomenclature inexistante !!");
         }
 
         return response;
     }
 
-    public HashMap<String, Object> getItem (Nomenclature nomenclatureConfig, String id, List<String> selectedFields) {
+    public HashMap<String, List<Map>> getItem (Nomenclature nomenclatureConfig, String id, List<String> selectedFields) {
         /**
          * Validation des RequestParam
          * */
@@ -81,15 +84,15 @@ public class PrepareResponse {
         this.nomenclatureConfig = nomenclatureConfig;
         HashMap response = new HashMap<String, Object>();
         String query = this.getQueryItem(id, selectedFields);
-        LOGGER.warn("query = "+ query);
 
         try {
             h2connection.createStatement(nomenclatureConfig.getCache());
             ResultSet rs = h2connection.executeQuery(query);
-            List<Map> values = nomenclatureConfig.getListMap(rs, selectedFields);
+            List<Map> values = this.getListMap(rs, selectedFields);
             response.put(nomenclatureConfig.getResourceName(), values);
         }catch (SQLException e){
             LOGGER.error("Erreur d'exécution de la requête : " + query);
+            LOGGER.error("e >>" + e.getMessage());
             throw new InternalErrorException("Err.00003", "!! Erreur d'exécution de la requête !!");
         }
 
@@ -98,23 +101,27 @@ public class PrepareResponse {
 
     public ResponseEntity<String> adaptContentType(HashMap<String, Object> response,  HttpServletRequest httpRequest){
         HttpHeaders httpHeaders= new HttpHeaders();
+        IFormatter output;
 
         switch (httpRequest.getHeader("accept")){
             case MediaType.APPLICATION_XML_VALUE:
                 httpHeaders.setContentType(MediaType.APPLICATION_XML);
-                return new ResponseEntity<>((new Response(response)).getXMLResponse(), httpHeaders, HttpStatus.OK);
+                output = new XmlResponse();
+                break;
 
             case MediaType.TEXT_PLAIN_VALUE:
-                httpHeaders.setContentType(TEXT_PLAIN);
-                return new ResponseEntity<>(new Response(response).getCSVResponse(), httpHeaders, HttpStatus.OK);
+            case "text/csv":
+                httpHeaders.setContentType(MediaType.TEXT_PLAIN);
+                output = new CsvResponse();
+                break;
 
             default:
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                return new ResponseEntity<>(JSONObject.toJSONString(response), httpHeaders, HttpStatus.OK);
+                output = new JsonResponse();
         }
 
+        return new ResponseEntity<>(output.transform(response), httpHeaders, HttpStatus.OK);
     }
-
 
     public String getQueryTotal() {
         List<String> request = new ArrayList<>();
@@ -139,7 +146,6 @@ public class PrepareResponse {
 
         return this.clausesPart;
     }
-
 
     public String getQueryCollection (List<String> selectedFields, String sortField, String sortSens, String paginPacket, String offset){
         List<String> request = new ArrayList<>();
@@ -179,5 +185,19 @@ public class PrepareResponse {
 
         return String.join(" ", request);
     }
+
+    public List<Map> getListMap (ResultSet rs, List<String> selectedFields) throws SQLException {
+        List<Map> items = new ArrayList<>();
+        while (rs.next()) {
+            Map item = new HashMap<String, String>();
+            for (String selectedField : selectedFields) {
+                item.put(selectedField, rs.getString(selectedField));
+            }
+            items.add(item);
+        }
+
+        return items;
+    }
+
 
 }

@@ -1,6 +1,6 @@
 package com.ijdan.training.nomenclatures.domain;
 
-public class Paging {
+class Paging {
     private String enabled;
     private String packet;
 
@@ -10,7 +10,7 @@ public class Paging {
     public Boolean isEnabled() {
         return this.getEnabled().equals("1");
     }
-    public String getEnabled() {
+    private String getEnabled() {
         return enabled;
     }
     public void setEnabled(String enabled) {
@@ -23,5 +23,22 @@ public class Paging {
 
     public void setPacket(String packet) {
         this.packet = packet;
+    }
+
+    /**
+     * Fixe le nombre d'éléments par paquet
+     * */
+    public String getPagingPacket (String paginPacket){
+        String packet;
+        try{
+            packet = Integer.valueOf(paginPacket).toString();
+        }catch (NumberFormatException e){
+            packet = this.getPacket();
+        }
+
+        if(packet.equals("0")){
+            packet = this.getPacket();
+        }
+        return packet;
     }
 }

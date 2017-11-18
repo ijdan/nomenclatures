@@ -1,11 +1,11 @@
 package com.ijdan.training.nomenclatures.domain;
 
-public class Summary {
+class Summary {
     private String enabled;
     private String nbElementsAttributeName;
     private String totalAttributeName;
 
-    public String getEnabled() {
+    private String getEnabled() {
         return enabled;
     }
 

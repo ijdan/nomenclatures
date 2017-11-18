@@ -1,6 +1,6 @@
 package com.ijdan.training.nomenclatures.domain;
 
-public class Clause {
+class Clause {
     private String name;
     private String[] values;
 

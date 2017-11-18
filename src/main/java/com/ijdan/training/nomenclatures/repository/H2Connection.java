@@ -20,8 +20,7 @@ public class H2Connection {
     static String FILE_DROP_DB = "/db/sql/drop-db.sql";
     static String FILE_CREATE_DB = "/db/sql/create-db.sql";
     static String FILE_INSERT_DATA = "/db/sql/insert-data.sql";
-    static boolean LOADED = false;
-    static long LOADED_TIME = 0;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(H2Connection.class);
 
     @Autowired
@@ -32,21 +31,17 @@ public class H2Connection {
     }
 
     public void createStatement(Cache cache) throws SQLException{
-        long currentTimeMillis = System.currentTimeMillis();
-        int numberOfSecondsPassed = (int) ((currentTimeMillis - LOADED_TIME)/1000);
         EmbeddedDatabase db;
-        if (cache.isEnabled() && numberOfSecondsPassed > Integer.parseInt(cache.getExpiration()) )
-        {
-            LOGGER.warn("Chargement des données depuis la source maître : raffraîchissement de la H2");
-            LOADED_TIME = currentTimeMillis;
+        if ( cache.useCache() ) {
+            LOGGER.info("Utilisation de la base H2 sans raffraîchissement");
+            db = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
+                    .build();
+        }else {
+            LOGGER.info("Chargement des données depuis la source maître : raffraîchissement de la H2");
             db = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
                     .addScript(FILE_DROP_DB)
                     .addScript(FILE_CREATE_DB)
                     .addScript(FILE_INSERT_DATA)
-                    .build();
-        }else {
-            LOGGER.warn("Utilisation de la base H2 sans raffraîchissement");
-            db = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
                     .build();
         }
 

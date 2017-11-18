@@ -1,7 +1,5 @@
 package com.ijdan.training.nomenclatures.domain;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,45 +116,6 @@ public class Nomenclature {
         }
     }
 
-    /**
-     * Fixe l'attibut sur lequel appliquer le tri
-     * */
-    public String getSortField (String sortFields){
-        if ( sortFields !=  null && !sortFields.isEmpty() && this.getSort().getFields().contains(sortFields) ){
-            return sortFields;
-        }else {
-            return this.getSort().getFields().get(0);
-        }
-    }
-
-    /**
-     * Fixe le sens du tri
-     * */
-    public String getSortSens (String sortSens){
-        if ( sortSens !=  null && !sortSens.isEmpty() && this.getSort().getSens().contains(sortSens) ){
-            return sortSens;
-        }else {
-            return this.getSort().getSens().get(0);
-        }
-
-    }
-
-    /**
-     * Fixe le nombre d'éléments par paquet
-     * */
-    public String getPagingPacket (String paginPacket){
-        String packet;
-        try{
-            packet = Integer.valueOf(paginPacket).toString();
-        }catch (NumberFormatException e){
-            packet = this.getPaging().getPacket();
-        }
-
-        if(packet.equals("0")){
-            packet = this.getPaging().getPacket();
-        }
-        return packet;
-    }
 
     /**
      * Fixe le positionnement du paquet à demander
@@ -183,20 +142,6 @@ public class Nomenclature {
 
     public void setSummary(Summary summary) {
         this.summary = summary;
-    }
-
-    public List<Map> getListMap (ResultSet rs, List<String> selectedFields) throws SQLException {
-        List<Map> items = new ArrayList<>();
-        while (rs.next()) {
-            Map item = new HashMap<String, String>();
-            for (String selectedField : selectedFields) {
-                item.put(selectedField, rs.getString(selectedField));
-            }
-            items.add(item);
-        }
-
-        return items;
-
     }
 
 
