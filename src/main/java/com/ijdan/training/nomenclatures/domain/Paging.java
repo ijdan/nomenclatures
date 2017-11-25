@@ -1,6 +1,6 @@
 package com.ijdan.training.nomenclatures.domain;
 
-class Paging {
+public class Paging {
     private String enabled;
     private String packet;
 

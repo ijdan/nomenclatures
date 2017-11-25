@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/T1.0/nomenclatures")
@@ -47,10 +48,17 @@ public class NomenclaturesController {
 
             HttpServletRequest httpRequest
     ) {
-        Nomenclature nomenclatureConfig = mapper.getNomenclature(nomenclatureName);
-        HashMap response = prepareResponse.getCollection(nomenclatureConfig, selectedFields, sortField, sortSens, paginPacket, offset);
+        HashMap response = new HashMap();
 
-        return prepareResponse.adaptContentType(response, httpRequest);
+        Nomenclature nomenclatureConfig = mapper.getNomenclature(nomenclatureName);
+        List<Map>  items = prepareResponse.getCollection(nomenclatureConfig, selectedFields, sortField, sortSens, paginPacket, offset);
+        response.put(nomenclatureConfig.getResourceName(), items);
+
+        if (nomenclatureConfig.getSummary().isEnabled()){
+            //Enrichissement par le sommaire
+        }
+
+        return prepareResponse.getAdaptedContentType(response, httpRequest);
     }
 
 
@@ -75,6 +83,6 @@ public class NomenclaturesController {
         Nomenclature nomenclatureConfig = mapper.getNomenclature(nomenclatureName);
         HashMap response = prepareResponse.getItem(nomenclatureConfig, id, selectedFields);
 
-        return prepareResponse.adaptContentType(response, httpRequest);
+        return prepareResponse.getAdaptedContentType(response, httpRequest);
     }
 }

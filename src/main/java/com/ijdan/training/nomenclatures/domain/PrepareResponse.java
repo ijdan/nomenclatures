@@ -2,7 +2,10 @@ package com.ijdan.training.nomenclatures.domain;
 
 import com.ijdan.training.nomenclatures.infrastructure.ExceptionHandling.InternalErrorException;
 import com.ijdan.training.nomenclatures.infrastructure.ExceptionHandling.ResourceNotFoundException;
+import com.ijdan.training.nomenclatures.repository.DatabasesProperties;
 import com.ijdan.training.nomenclatures.repository.H2Connection;
+import com.ijdan.training.nomenclatures.repository.H2Repository;
+import com.ijdan.training.nomenclatures.repository.IRepository;
 import com.ijdan.training.nomenclatures.response.CsvResponse;
 import com.ijdan.training.nomenclatures.response.IFormatter;
 import com.ijdan.training.nomenclatures.response.JsonResponse;
@@ -20,8 +23,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static org.springframework.http.MediaType.TEXT_PLAIN;
-
 @Component
 public class PrepareResponse {
     private static final Logger LOGGER = LoggerFactory.getLogger(PrepareResponse.class);
@@ -30,9 +31,16 @@ public class PrepareResponse {
     @Autowired
     private H2Connection h2connection;
 
+    @Autowired
+    DatabasesProperties databasesProperties;
+
     private Nomenclature nomenclatureConfig;
 
-    public HashMap<String, List<Map>> getCollection(Nomenclature nomenclatureConfig, List<String> selectedFields, String sortField, String sortSens, String paginPacket, String offset){
+    public PrepareResponse(DatabasesProperties databasesProperties) {
+        this.databasesProperties = databasesProperties;
+    }
+
+    public List<Map> getCollection(Nomenclature nomenclatureConfig, List<String> selectedFields, String sortField, String sortSens, String paginPacket, String offset){
         this.nomenclatureConfig = nomenclatureConfig;
         /**
          * Validation des RequestParam
@@ -40,6 +48,11 @@ public class PrepareResponse {
          * */
         //Validation des attributs souhaités en sorite
         selectedFields = nomenclatureConfig.getOutputKeys(selectedFields);
+        HashMap selectedColumn = new HashMap<String, String>();
+        for(String sf : selectedFields){
+            selectedColumn.put(this.nomenclatureConfig.getOutput().get(sf), sf);
+        }
+
         //Validation l'attribut sur lequel le tri est permis
         sortField = nomenclatureConfig.getSort().getSortField (sortField);
         //Validation du sens du tri
@@ -49,29 +62,28 @@ public class PrepareResponse {
         //Validation de l'offset : le positionnement du paquet à retourner
         offset = nomenclatureConfig.getOffset (offset);
 
-        HashMap response = new HashMap<String, Object>();
-        String query = this.getQueryCollection(selectedFields, sortField, sortSens, paginPacket, offset);
+
         try {
             h2connection.createStatement(nomenclatureConfig.getCache());
-            ResultSet rs = h2connection.executeQuery(query);
-            List<Map> values = this.getListMap(rs, selectedFields);
-            response.put(nomenclatureConfig.getResourceName(), values);
-
-            if (nomenclatureConfig.getSummary().isEnabled()){
+            /*
+             if (nomenclatureConfig.getSummary().isEnabled()){
                 response.put(nomenclatureConfig.getSummary().getNbElementsAttributeName(), String.valueOf(values.size()));
 
                 rs = h2connection.executeQuery( this.getQueryTotal() );
                 if (rs.next()) {
                     response.put(nomenclatureConfig.getSummary().getTotalAttributeName(), rs.getString("TOTAL"));
                 }
-            }
+                */
         }catch (SQLException e){
-            LOGGER.error("Erreur d'exécution de la requête : " + query);
+            LOGGER.error("Erreur d'exécution de la requête : ");
             LOGGER.error("e >>" + e.getMessage());
             throw new ResourceNotFoundException("Err.00003", "!! Nomenclature inexistante !!");
         }
 
-        return response;
+        IRepository repository;
+        repository = new H2Repository(databasesProperties); //Selon les cas. A voir plus tard.
+
+        return repository.findAllItems(nomenclatureConfig, selectedColumn, sortField, sortSens, paginPacket, offset);
     }
 
     public HashMap<String, List<Map>> getItem (Nomenclature nomenclatureConfig, String id, List<String> selectedFields) {
@@ -99,7 +111,7 @@ public class PrepareResponse {
         return response;
     }
 
-    public ResponseEntity<String> adaptContentType(HashMap<String, Object> response,  HttpServletRequest httpRequest){
+    public ResponseEntity<String> getAdaptedContentType(HashMap<String, Object> response,  HttpServletRequest httpRequest){
         HttpHeaders httpHeaders= new HttpHeaders();
         IFormatter output;
 
