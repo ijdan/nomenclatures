@@ -1,15 +1,14 @@
 package com.ijdan.training.nomenclatures.response;
 
-import com.ijdan.training.nomenclatures.domain.PrepareResponse;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class XmlResponse implements IFormatter {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(XmlResponse.class);
 
     public String transform(HashMap<String, Object> response) {
         final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(XmlResponse.class);
@@ -20,12 +19,14 @@ public class XmlResponse implements IFormatter {
         List<Map> elements;
         for (String key : response.keySet()) {
             type = response.get(key).getClass().getSimpleName();
-            if (type.equals("String")){
+            LOGGER.warn("Type >>" + type);
+            if (type.equals("Integer")){
                 //Le sommaire
                 resp.add("<"+key+">"+ response.get(key) +"</"+key+">");
 
             }else {
                 //Les éléments
+                LOGGER.warn(">>><" + response.get(key).toString());
                 elements = (ArrayList)response.get(key);
                 resp.add("<items>");
                 for(Map element : elements){

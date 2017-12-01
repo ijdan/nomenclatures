@@ -1,9 +1,9 @@
 package com.ijdan.training.nomenclatures.domain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 public class Nomenclature {
     private String resourceName;
     private String enbled;
@@ -93,39 +93,6 @@ public class Nomenclature {
 
     public void setProduces(List<String> produces) {
         this.produces = produces;
-    }
-
-    /**
-     * Fixe les attributs de la ressource à restituer
-     * */
-    public List<String> getOutputKeys (List<String> selectedFields){
-        List<String> fields = new ArrayList<>();
-        List<String> outputKeys = new ArrayList<>();
-
-        for (Map.Entry<String, String> key : this.getOutput().entrySet()) {
-            fields.add( key.getKey() );
-
-            if (selectedFields != null && selectedFields.contains(key.getKey())) {
-                outputKeys.add( key.getKey() );
-            }
-        }
-        if (outputKeys.size() > 0){
-            return outputKeys;
-        }else {
-            return fields;
-        }
-    }
-
-
-    /**
-     * Fixe le positionnement du paquet à demander
-     * */
-    public String getOffset(String offset) {
-        try{
-            return Integer.valueOf(offset).toString();
-        }catch (NumberFormatException e){
-            return "0";
-        }
     }
 
     public Cache getCache() {

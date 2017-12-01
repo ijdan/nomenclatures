@@ -1,13 +1,9 @@
 package com.ijdan.training.nomenclatures.repository;
 
-import com.ijdan.training.nomenclatures.domain.Cache;
-import com.ijdan.training.nomenclatures.domain.Clause;
-import com.ijdan.training.nomenclatures.domain.Nomenclature;
-import com.ijdan.training.nomenclatures.domain.PrepareResponse;
+import com.ijdan.training.nomenclatures.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -16,12 +12,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class H2Repository implements IRepository  {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PrepareResponse.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(H2Repository.class);
 
     private String query = "select %s from %s where %s order by %s %s %s";
     private String total = "select count(*) as total from %s where %s";
@@ -33,10 +27,10 @@ public class H2Repository implements IRepository  {
     }
 
     @Override
-    public List<Map> findAllItems(Nomenclature nomenclatureConfig, HashMap<String, String> selectedFields, String sortField, String sortSens, String paginPacket, String offset) {
+    public ResultSet findAllItems(Nomenclature nomenclatureConfig, Request request) {
         String limit = "";
         if(nomenclatureConfig.getPaging().isEnabled()){
-            limit = "limit " + offset + ", " + paginPacket;
+            limit = "limit " + request.getOffset() + ", " + request.getPaginPacket();
         }
 
         List<String> where = new ArrayList<>();
@@ -49,40 +43,54 @@ public class H2Repository implements IRepository  {
             where.add("1=1");
         }
         String req = String.format(query,
-                                    String.join(", ", selectedFields.keySet()),
+                                    String.join(", ", request.getSelectedFields().keySet()),
                                     nomenclatureConfig.getDbTable(),
                                     String.join(" and ", where),
-                                    selectedFields.get(sortField),
-                                    sortSens,
+                                    request.getSelectedFields().get(request.getSortField()),
+                                    request.getSortSens(),
                                     limit);
         LOGGER.warn(req);
-        ResultSet rs = this.execution(req);
-        if (rs != null){
-            try {
-                List<Map> items = new ArrayList<>();
-                while (rs.next()) {
-                    Map item = new HashMap<String, String>();
-                    for (String sf : selectedFields.keySet()){
-                        //resource attribute <> value
-                        item.put(selectedFields.get(sf), rs.getString(sf));
-                    }
-                    items.add(item);
-                }
-                return items;
+        return this.execution(req);
+    }
 
+    @Override
+    public int count(Nomenclature nomenclatureConfig) {
+        String req = String.format(total, nomenclatureConfig.getDbTable(), "1=1");
+        ResultSet rs = this.execution(req);
+        if (rs != null) {
+            try {
+                if (rs.next()) {
+                    return Integer.valueOf(rs.getString("total"));
+                }
             } catch (SQLException e) {
                 LOGGER.error("Aucune donnée trouvée : ?", e.getMessage());
             }
         }
-        return null;
-
-
+        return 0;
     }
 
     @Override
-    public List<Map> count(Nomenclature nomenclatureConfig) {
-        String req = String.format(total, nomenclatureConfig.getDbTable(), "1=1");
-        return null;
+    public ResultSet findItemById(Nomenclature nomenclatureConfig, String id, Request request) {
+        List<String> where = new ArrayList<>();
+        where.add(nomenclatureConfig.getPk() + " = " + id);
+
+        List<Clause> clauses = nomenclatureConfig.getClause();
+        if (clauses.size() > 0){
+            for (Clause c : clauses) {
+                where.add(c.getName() + " IN ('"+ String.join("', '", c.getValues()) +"') ");
+            }
+        }
+
+        String req = String.format(query,
+                String.join(", ", request.getSelectedFields().keySet()),
+                nomenclatureConfig.getDbTable(),
+                String.join(" and ", where),
+                nomenclatureConfig.getPk(),
+                request.getSortSens(),
+                ""
+                );
+        LOGGER.warn(req);
+        return this.execution(req);
     }
 
     @Override
@@ -100,18 +108,14 @@ public class H2Repository implements IRepository  {
             LOGGER.error("Error de connexion à la base de données: ?", e.getMessage());
             return null;
         }
-
-
     }
 
     @Override
     public ResultSet execution(String query) {
         try {
-            return this
-                    .connexion()
-                    .executeQuery(query);
+            return connexion().executeQuery(query);
         } catch (SQLException e) {
-            LOGGER.error("Error d'exécution de la requete : " + query, e.getMessage());
+            LOGGER.error("Error d'exécution de la requete : {} / Message : {}", query, e.getMessage());
             return null;
         }
 

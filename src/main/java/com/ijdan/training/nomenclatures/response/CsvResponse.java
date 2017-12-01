@@ -14,7 +14,7 @@ public class CsvResponse implements IFormatter {
         List<Map> elements;
         for (String key : response.keySet()) {
             type = response.get(key).getClass().getSimpleName();
-            if (type.equals("String")){
+            if (type.equals("Integer")){
                 //Le sommaire
                 resp.add('"' + response.get(key).toString().replace('"', '\"') + '"' + "\n");
 

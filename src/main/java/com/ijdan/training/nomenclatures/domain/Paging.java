@@ -28,17 +28,4 @@ public class Paging {
     /**
      * Fixe le nombre d'éléments par paquet
      * */
-    public String getPagingPacket (String paginPacket){
-        String packet;
-        try{
-            packet = Integer.valueOf(paginPacket).toString();
-        }catch (NumberFormatException e){
-            packet = this.getPacket();
-        }
-
-        if(packet.equals("0")){
-            packet = this.getPacket();
-        }
-        return packet;
-    }
 }

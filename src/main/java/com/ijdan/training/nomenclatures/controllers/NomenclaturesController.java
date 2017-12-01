@@ -16,13 +16,13 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/T1.0/nomenclatures")
 public class NomenclaturesController {
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NomenclaturesController.class);
 
     @Autowired
     private Mapper mapper;
 
     @Autowired
-    private PrepareResponse prepareResponse;
+    private Response response;
 
     /***
      * endpoint collection
@@ -48,19 +48,24 @@ public class NomenclaturesController {
 
             HttpServletRequest httpRequest
     ) {
-        HashMap response = new HashMap();
+        HashMap rsps = new HashMap();
 
         Nomenclature nomenclatureConfig = mapper.getNomenclature(nomenclatureName);
-        List<Map>  items = prepareResponse.getCollection(nomenclatureConfig, selectedFields, sortField, sortSens, paginPacket, offset);
-        response.put(nomenclatureConfig.getResourceName(), items);
+        Request request = new Request(nomenclatureConfig, selectedFields, sortField, sortSens, paginPacket, offset);
+
+        List<Map>  items = response.getCollection(nomenclatureConfig, request);
 
         if (nomenclatureConfig.getSummary().isEnabled()){
+            rsps.put(nomenclatureConfig.getSummary().getNbElementsAttributeName(), Integer.valueOf(items.size()));
+
+            int total = response.getQueryTotal(nomenclatureConfig);
+            rsps.put(nomenclatureConfig.getSummary().getTotalAttributeName(), Integer.valueOf(total));
             //Enrichissement par le sommaire
         }
+        rsps.put(nomenclatureConfig.getResourceName(), items);
 
-        return prepareResponse.getAdaptedContentType(response, httpRequest);
+        return response.getAdaptedContentType(rsps, httpRequest);
     }
-
 
     /***
      * endpoint item
@@ -80,9 +85,14 @@ public class NomenclaturesController {
 
             HttpServletRequest httpRequest
     ){
-        Nomenclature nomenclatureConfig = mapper.getNomenclature(nomenclatureName);
-        HashMap response = prepareResponse.getItem(nomenclatureConfig, id, selectedFields);
+        HashMap rsps = new HashMap();
 
-        return prepareResponse.getAdaptedContentType(response, httpRequest);
+        Nomenclature nomenclatureConfig = mapper.getNomenclature(nomenclatureName);
+        Request request = new Request(nomenclatureConfig, selectedFields, "", "", "", "");
+
+        List<Map>  items = response.getItem(nomenclatureConfig, id, request);
+        rsps.put(nomenclatureConfig.getResourceName(), items);
+
+        return response.getAdaptedContentType(rsps, httpRequest);
     }
 }
